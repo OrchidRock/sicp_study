@@ -1,0 +1,5 @@
+(define (test n)
+    (let ((a 2))
+        (define u (+ v 1))
+        (define v (+ n 1))
+        (+ u v 1)))

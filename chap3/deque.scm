@@ -1,0 +1,90 @@
+;:
+;: exercise 3.23
+;:
+
+(define (make-deque) (cons '*deque* '()))
+
+(define (empty-deque? deque) (null? (cdr deque)))
+
+(define (front-deque deque) 
+    (if (empty-deque? deque)
+        (error "FRONT-DEQUE called with empty deque" deque)
+        (car (cdr deque))))
+
+(define (rear-deque deque)
+    (if (empty-deque? deque)
+        (error "REAR-DEQUE called with empty deque" deque)
+        (let ((tail-item (car (cddr deque))))
+            (car tail-item))))
+
+(define (front-insert-deque! deque item)
+    (let ((new-item (cons item (cons '() '()))))
+        (cond ((empty-deque? deque)
+                (set-cdr! deque new-item)
+                (set-car! (cdr new-item) new-item)
+                deque)
+              (else
+                (let ((tail-item (car (cddr deque)))
+                      (first-item (cdr deque)))
+                    (set-car! (cdr first-item) new-item)
+                    (set-cdr! (cdr new-item) first-item)
+                    (set-car! (cdr new-item) tail-item)
+                    (set-cdr! deque new-item)
+                    deque)))))
+
+(define (rear-insert-deque! deque item)
+    (let ((new-item (cons item (cons '() '()))))
+        (cond ((empty-deque? deque)
+                (set-cdr! deque new-item)
+                (set-car! (cdr new-item) new-item)
+                deque)
+              (else
+                (let ((tail-item (car (cddr deque)))
+                      (first-item (cdr deque)))
+                    (set-car! (cdr first-item) new-item)
+                    (set-cdr! (cdr tail-item) new-item)
+                    (set-car! (cdr new-item) tail-item)
+                    deque)))))
+
+(define (front-delete-deque! deque)
+    (if (empty-deque? deque)
+        (error "FRONT-DELETE-DEQUE called with empty deque" deque)
+        (let ((next-item (cdr (cddr deque))))
+            (cond ((null? next-item)
+                    (set-cdr! deque next-item)
+                    deque)
+                  (else
+                    (let ((tail-item (car (cddr deque))))
+                        (set-car! (cdr next-item) tail-item)
+                        (set-cdr! deque next-item)
+                        deque))))))
+
+(define (rear-delete-deque! deque)
+    (if (empty-deque? deque)
+        (error "REAR-DELETE-DEQUE called with empty deque" deque)
+        (let ((tail-item (car (cddr deque)))
+              (first-item (cdr deque)))
+            (cond ((null? (cddr first-item))
+                    (set-cdr! deque '())
+                    deque)
+                  (else
+                    (let ((prev-item (car (cdr tail-item))))
+                        (set-car! (cdr first-item) prev-item)
+                        (set-cdr! (cdr prev-item) '())
+                        deque))))))
+(define (print-deque deque)
+    (define (list-items d)
+        (if (null? d)
+            '()
+            (cons (car d) (list-items (cddr d)))))
+    (display (list-items (cdr deque)))
+    'ok)
+
+;: Test
+(define d1 (make-deque))
+(print-deque d1)
+(front-insert-deque! d1 'a)
+(front-insert-deque! d1 'b)
+(rear-insert-deque! d1 'c)
+(front-delete-deque! d1)
+(rear-delete-deque! d1)
