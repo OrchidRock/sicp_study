@@ -1,6 +1,6 @@
 ;:
 ;: exercise 2.42
-;: The "eight-quenns puzzle" asks how to place eight queens on a chessboard so that 
+;: The "eight-quenns puzzle" asks how to place eight queens on a chessboard so that
 ;: no queen is in check from aany other (i.e., no two queens are in the same row, column, or diagonl.)
 ;:
 
@@ -12,8 +12,8 @@
     (define (iter new rest c)
         (cond ((null? rest) true)
               ((= c k) true)
-              ((or (= (car rest) new) 
-                   (= (car rest) (- new c)) 
+              ((or (= (car rest) new)
+                   (= (car rest) (- new c))
                    (= (car rest) (+ new c))) false)
               (else (iter new (cdr rest) (+ c 1)))))
     (iter (car p) (cdr p) 1))
@@ -29,14 +29,14 @@
         (if (= k 0)
             empty-board
             ( let ((result
-            (filter (lambda (positions) (safe? k positions)) 
+            (filter (lambda (positions) (safe? k positions))
                     (flatmap (lambda (rest-of-queens)
                                      (map (lambda (new-row)
-                                          (adjoin-position new-row k rest-of-queens)) 
-                                          (enumerate-interval 1 board-size))) 
+                                          (adjoin-position new-row k rest-of-queens))
+                                          (enumerate-interval 1 board-size)))
                              (queen-cols (- k 1))))))
-                             (display result)
-                             (newline)
+                             ;:(display result)
+                             ;:(newline)
                              result)))
     (queen-cols board-size))
 
@@ -47,14 +47,14 @@
         (if (= k 0)
             empty-board
             ( let ((result
-            (filter (lambda (positions) (safe? k positions)) 
+            (filter (lambda (positions) (safe? k positions))
                     (flatmap (lambda (new-row)
                                      (map (lambda (rest-of-queens)
-                                          (adjoin-position new-row k rest-of-queens)) 
-                                          (queen-cols (- k 1)))) 
+                                          (adjoin-position new-row k rest-of-queens))
+                                          (queen-cols (- k 1))))
                              (enumerate-interval 1 board-size)))))
-                             (display result)
-                             (newline)
+                             ;:(display result)
+                             ;:(newline)
                              result)))
     (queen-cols board-size))
 ;: Test

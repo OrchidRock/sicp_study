@@ -1,7 +1,7 @@
 ;:
 ;: gcd.scm
 ;: Get the gcd of two integers by Euclidi's algorithm.
-;: 
+;:
 
 (declare (usual-integrations))
 
@@ -16,3 +16,10 @@
     (if (< a b)
         (gcd-iter b a)
         (gcd-iter a b)))
+
+;: we have not to compare the value of a and b.
+
+(define (gcd-my2 a b)
+    (if (= b 0)
+        a
+        (gcd-my2 b (remainder a b))))

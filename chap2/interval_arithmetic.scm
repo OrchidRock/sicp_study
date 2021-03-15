@@ -16,18 +16,6 @@
         (make-interval (min p1 p2 p3 p4)
                        (max p1 p2 p3 p4))))
 
-;: the reciprocal of interval
-;: exercise 2.10
-;:
-(define (recip-interval x)
-    (if (<= (* (lower-bound x) (upper-bound x)) 0)
-        (error "the argument has an invalid value of recip-interval")
-        (make-interval (/ 1.0 (upper-bound x))
-                       (/ 1.0 (lower-bound x)))))
-
-(define (div-interval x y)
-    (mul-interval x (recip-interval y))) 
-               
 
 ;: exercise 2.7
 (define (make-interval a b) (cons a b))
@@ -43,9 +31,29 @@
 (define (sub-interval x y)
     (add-interval x (neg-interval y)))
 
+;: exercise 2.9
+;: W(A+B) = W(A) + W(B)
+;: W(A-B) = W(A) + W(B)
+
+(define (width-interval x)
+    (/ (+ (lower-bound x) (upper-bound x)) 2.0))
+
+
+;: the reciprocal of interval
+;: exercise 2.10
+;:
+(define (recip-interval x)
+    (if (<= (* (lower-bound x) (upper-bound x)) 0)
+        (error "the argument has an invalid value of recip-interval")
+        (make-interval (/ 1.0 (upper-bound x))
+                       (/ 1.0 (lower-bound x)))))
+
+(define (div-interval x y)
+    (mul-interval x (recip-interval y)))
+
 
 ;: exercise 2.12
-;: Define a constructor that takes a center and a percentage tolerance and produces the desired 
+;: Define a constructor that takes a center and a percentage tolerance and produces the desired
 ;: interval.
 (define (make-center-percent c p)
     (let ((width (/ (* c p) 100)))
@@ -61,7 +69,7 @@
 ;: neg-interval: p' = -p, c' = -c
 ;: sub-interval: p = (c1p1 + c2p2)/(c1-c2), c = c1 - c2
 ;: mul-interval: p = (p1+p2)/(1+p1p2%%), c = c1c2 + c1c2p1p2%%
-;: recip-interval: p' = p, c' = 1/(c-cpp%%) 
+;: recip-interval: p' = p, c' = 1/(c-cpp%%)
 ;: div-interval: p = (p1+p2)/(1+p1p2%%), c = (c1+c1p1p2%%)/(c2-c2p2p2%%)
 ;:
 (define (percent i)

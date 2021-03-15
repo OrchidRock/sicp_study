@@ -10,17 +10,17 @@
     (newline))
 
 (define (segment->painter segment-list)
-    (lambda (frame) 
+    (lambda (frame)
         (for-each (lambda (segment)
                         (draw-line ((frame-coord-map frame) (start-segment segment))
-                                   ((frame-coord-map frame) (end-segment segment)))) 
+                                   ((frame-coord-map frame) (end-segment segment))))
                   segment-list)))
 
 ;:
 ;: exercise 2.49
 ;: a) The painter that draws the outline of the designated frame.
-(define frame-edge-painter 
-    (segment->painter (list (make-segment (make-vect 0 0) 
+(define frame-edge-painter
+    (segment->painter (list (make-segment (make-vect 0 0)
                                           (make-vect 0 1))
                             (make-segment (make-vect 0 0)
                                           (make-vect 1 0))
@@ -28,8 +28,8 @@
                                           (make-vect 1 1))
                             (make-segment (make-vect 1 0)
                                           (make-vect 1 1)))))
-;: b) The painter that draws an "X" by connecting opposite 
-;:    corners of the frame. 
+;: b) The painter that draws an "X" by connecting opposite
+;:    corners of the frame.
 (define frame-x-painter
     (segment->painter (list (make-segment (make-vect 0 0)
                                           (make-vect 1 1))

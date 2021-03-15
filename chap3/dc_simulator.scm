@@ -144,7 +144,7 @@
 
 (define (probe name wire)
   (add-action! wire
-               (lambda ()        
+               (lambda ()
                  (newline)
                  (display name)
                  (display " ")
@@ -214,7 +214,7 @@
         (set-current-time! agenda (segment-time first-seg))
         (front-queue (segment-queue first-seg)))))
 
-;: 
+;:
 (define the-agenda (make-agenda))
 (define inverter-delay 2)
 (define and-gate-delay 3)

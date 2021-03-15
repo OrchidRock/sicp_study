@@ -6,7 +6,7 @@
 
 (define (empty-deque? deque) (null? (cdr deque)))
 
-(define (front-deque deque) 
+(define (front-deque deque)
     (if (empty-deque? deque)
         (error "FRONT-DEQUE called with empty deque" deque)
         (car (cdr deque))))
@@ -83,8 +83,8 @@
 ;: Test
 (define d1 (make-deque))
 (print-deque d1)
-(front-insert-deque! d1 'a)
-(front-insert-deque! d1 'b)
-(rear-insert-deque! d1 'c)
-(front-delete-deque! d1)
-(rear-delete-deque! d1)
+;(front-insert-deque! d1 'a)
+;(front-insert-deque! d1 'b)
+;(rear-insert-deque! d1 'c)
+;(front-delete-deque! d1)
+;(rear-delete-deque! d1)

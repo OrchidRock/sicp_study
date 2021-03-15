@@ -1,5 +1,5 @@
 ;:
-;: ercise 2.6
+;: exercise 2.6
 ;: Church numerals
 ;;
 

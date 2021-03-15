@@ -1,7 +1,7 @@
 ;:
 ;:
-;(load "prefix_algebraic_expr.scm")
-(load "infix_algebraic_expr.scm")
+(load "prefix_algebraic_expr.scm")
+;(load "infix_algebraic_expr.scm")
 (define (deriv expr var)
     (display expr)
     (newline)
@@ -9,7 +9,7 @@
           ((variable? expr) (if (same-variable? expr var) 1 0))
           ((sum? expr) (make-sum (deriv (addend expr) var)
                                  (deriv (augend expr) var)))
-          ((product? expr) (make-sum (make-product (multiplier expr) 
+          ((product? expr) (make-sum (make-product (multiplier expr)
                                                    (deriv (multiplicand expr) var))
                                      (make-product (multiplicand expr)
                                                    (deriv (multiplier expr) var))))

@@ -1,4 +1,4 @@
-;: 
+;:
 ;: Finding fixed points of functions.
 ;:
 
@@ -28,7 +28,7 @@
     (fixed-point (lambda (y) (/ x y)) 1.0))
 
 ;: the converge version.
-;: A technique that we call average damping, ofton aids the convergence of fixed-point searches.
+;: A technique that we call average damping, often aids the convergence of fixed-point searches.
 ;:
 (define (sqrt x)
     (fixed-point (lambda (y) (average y (/ x y))) 1.0))
@@ -38,7 +38,7 @@
 (define (fai)
     (fixed-point (lambda (y) (+ 1.0 (/ 1.0 y))) 1.0))
 
-;: 
+;:
 (define (sqrt x)
     (fixed-point-of-transform (lambda (y) (/ x y))
                              average-damp

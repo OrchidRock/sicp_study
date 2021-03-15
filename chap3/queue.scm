@@ -1,7 +1,7 @@
 ;:
 ;:
 ;:
-;: constructor 
+;: constructor
 (define (make-queue) (cons '() '()))
 (define (front-ptr queue) (car queue))
 (define (rear-ptr queue) (cdr queue))
@@ -11,7 +11,7 @@
 ;:queue's operations
 
 (define (empty-queue? queue) (null? (front-ptr queue)))
-(define (front-queue queue) 
+(define (front-queue queue)
     (if (empty-queue? queue)
         (error "FRONT called with an empty queue" queue)
         (car (front-ptr queue))))
