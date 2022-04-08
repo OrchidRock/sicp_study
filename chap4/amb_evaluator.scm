@@ -23,6 +23,7 @@
         ((quoted? exp) (analyze-quoted exp))
         ((variable? exp) (analyze-variable exp))
         ((assignment? exp) (analyze-assignment exp))
+        ((permanent-assignment? exp) (analyze-perm-assignment exp)) ;; exercise 4.51
         ((definition? exp) (analyze-definition exp))
         ((if? exp) (analyze-if exp))
         ((lambda? exp) (analyze-lambda exp))
@@ -134,6 +135,23 @@
                                         (set-variable-value! var old-vlue env)
                                         (fail2)))))
                     fail))))
+
+;: exercise 4.51
+(define (permanent-assignment? exp)
+  (tagged-list? exp 'permanent-set!))
+(define (analyze-perm-assignment exp)
+    (print-analyze "Before analyze-perm-assignment => " exp)
+    (let ((var (assignment-variable exp))
+          (vproc (analyze (assignment-value exp))))
+        (print-analyze "=> After analyze-perm-assignment: lambda (env) " var vproc)
+        (lambda (env succeed fail)
+            (vproc env
+                    (lambda (val fail2)
+                        (set-variable-value! var val env)
+                        (succeed 'ok fail2))
+                    fail))))
+
+
 (define (analyze-let exp)
     (print-analyze "Before analyze-let => " exp)
     (let ((proc (analyze (let->combination exp))))
@@ -250,6 +268,7 @@
         (list '= =)
         (list '> >)
         (list '>= >=)
+        (list '<= <=)
         (list 'abs abs)
         (list 'remainder remainder)
         (list 'integer? integer?)
@@ -258,6 +277,7 @@
         (list 'prime? prime?) ;: load prime.scm
         (list 'display display)
         (list 'newline newline)
+        (list 'load load)
         ;(list 'and and)
         ;(list 'or or)
         ;(list 'read-string read-string)
@@ -269,4 +289,4 @@
     (list '(define (require p) (if (not p) (amb)))))
 
 (define the-global-environment (setup-environment))
-;(driver-loop)
+(driver-loop)

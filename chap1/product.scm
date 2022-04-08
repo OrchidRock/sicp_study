@@ -1,7 +1,7 @@
 
 ;: exercise 1.31
-;: Write an analogue procedure called product that returns the product of the values of a 
-;: function at points over a given rnage.
+;: Write an analogue procedure called product that returns the product of the values of a
+;: function at points over a given range.
 
 (define (product term a next b)
     (if (> a b)
@@ -25,7 +25,7 @@
 ;: load accumulate.scm to revoke another product which build on accumulate procedure.
 ;: load procedure will override procedures above all.
 (load "accumulate.scm")
-;: recursive version 
+;: recursive version
 (define (pi-product b)
     (define (pi-next x) (+ x 2.0))
     (define (pi-term x) (/ (* (- x 1) (+ x 1))

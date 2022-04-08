@@ -1,13 +1,7 @@
-;#lang racket
-;(require graphics/graphics)
+
 (load "frame.scm")
 (load "segment.scm")
 
-(define (draw-line vs ve)
-    (display vs)
-    (display "->")
-    (display ve)
-    (newline))
 
 (define (segment->painter segment-list)
     (lambda (frame)

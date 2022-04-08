@@ -4,12 +4,12 @@
 ;:
 
 (load "conventional_interfaces.scm")
+(load "unique_pairs.scm")
 (cd "../chap1")
 (load "prime.scm")
 (cd "../chap2")
 
-(define (flatmap proc seq)
-    (accumulate append '() (map proc seq)))
+
 
 (define (prime-sum? pair)
     (prime? (+ (car pair) (car (cdr pair)))))
@@ -17,9 +17,8 @@
 (define (make-pair-sum pair)
     (list (car pair) (cadr pair) (+ (car pair) (cadr pair))))
 
-(load "unique_pairs.scm")
 (define (prime-pair-sum n)
-    (map make-pair-sum 
+    (map make-pair-sum
          (filter prime-sum? (unique-pairs n))))
 
 ;: Test

@@ -1,12 +1,12 @@
 ;:
 ;: exercise 4.21
 ;: This example illustrates a programming trick for formulating recursive procedures without
-;: using define. The most general trick of this sort is the "Y operator", which can be used 
+;: using define. The most general trick of this sort is the "Y operator", which can be used
 ;: to give a "pure lambda-calculus" implementation of recursive.
 
-((lambda (n) 
+((lambda (n)
     ((lambda (fact) (fact fact n))
-        (lambda (ft k) 
+        (lambda (ft k)
             (if (= k 1)
                 1
                 (* k (ft ft (- k 1)))))))
@@ -15,13 +15,19 @@
 ;: a)
 ((lambda (n)
     ((lambda (fib) (fib fib n))
+    ((lambda (fib) (fib fib n))
+        (lambda (ft k)
+            (cond ((= k 0) 0)
+                  ((= k 1) 1)
+                  (else (+ (ft ft (- k 1)) (ft ft (- k 2))))))))
+    10)
         (lambda (ft k)
             (cond ((= k 0) 0)
                   ((= k 1) 1)
                   (else (+ (ft ft (- k 1)) (ft ft (- k 2))))))))
     10)
 
-;: b)
+;; b)
 (define (f x)
     (define (even? n)
         (if (= n 0)

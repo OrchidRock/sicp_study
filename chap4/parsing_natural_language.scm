@@ -30,6 +30,7 @@
     (require (null? *unparsed*))
     sent))
 
+
 (define prepositions '(prep for to in by with))
 
 (define (parse-prepositional-phrase)
@@ -62,3 +63,14 @@
                              noun-phrase
                              (parse-prepositional-phrase)))))
   (maybe-extend (parse-simple-noun-phrase)))
+
+
+;: exercise 4.49
+(define (parse)
+    (let ((get (parse-sentence)))
+        get))
+(define (parse-word word-list)
+  (require (not (null? word-list)))
+  (let ((amb-list (cons 'amb (cdr word-list))))
+    (let ((found-word amb-list))
+        (list (car word-list) found-word))))

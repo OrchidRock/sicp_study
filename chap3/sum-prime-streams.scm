@@ -1,7 +1,7 @@
 ;:
 ;:
 ;:
-(load "streams.scm")
+(load "streams_interfaces.scm")
 (cd "../chap1")
 (load "prime.scm")
 (cd "../chap2")
@@ -13,7 +13,7 @@
 
 ;: Test
 ;: Value: 10009
-(define T1 (lambda () (car (cdr (filter prime? 
+(define T1 (lambda () (car (cdr (filter prime?
                              (enumerate-interval 10000 100000))))))
 
 

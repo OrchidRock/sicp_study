@@ -8,4 +8,4 @@
 (assert! (rule (reverse () ())))
 (assert! (rule (reverse (?x) (?x))))
 (assert! (rule (reverse (?a ?b) (?b ?a))))
-(assert! (rule (reverse (?x . ?y) ?z) (and (reverse ?y ?c) (append-to-form ?c (?x) ?z))))
+(assert! (rule (reverse (?x . ?y) ?z) (and (append-to-form ?c (?x) ?z) (reverse ?y ?c))))

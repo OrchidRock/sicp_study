@@ -30,7 +30,7 @@
                       (cons (list key-1
                                   (cons key-2 value))
                             (cdr local-table)))))
-      'ok)    
+      'ok)
     (define (dispatch m)
       (cond ((eq? m 'lookup-proc) lookup)
             ((eq? m 'insert-proc!) insert!)
@@ -44,20 +44,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;: exercise 2.78
-;: 
+;:
 (define (attach-tag type-tag contents)
-    (if (eq? type-tag 'scheme-number)
+    (if (or (eq? type-tag 'integer) (eq? type-tag 'real))
         contents
         (cons type-tag contents)))
 
 (define (type-tag datum)
     (cond ((pair? datum) (car datum))
-          ((number? datum) 'scheme-number)
+          ((exact? datum) 'integer)
+          ((inexact? datum) 'real)
           (else (error "Bad tagged datum -- TYPE-TAG" datum))))
 
 (define (contents datum)
     (cond ((pair? datum) (cdr datum))
-          ((number? datum) datum)
+          ((exact? datum) datum)
+          ((inexact? datum) datum)
           (else (error "Bad tagged datum -- CONTENTS" datum))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;

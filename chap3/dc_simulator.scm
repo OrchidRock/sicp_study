@@ -1,7 +1,6 @@
 ;:
 ;:
 ;:
-
 (define (make-wire)
   (let ((signal-value 0) (action-procedures '()))
     (define (set-my-signal! new-value)
@@ -205,7 +204,8 @@
   (let ((q (segment-queue (first-segment agenda))))
     (delete-queue! q)
     (if (empty-queue? q)
-        (set-segments! agenda (rest-segments agenda)))))
+        (set-segments! agenda (rest-segments agenda))
+        'done)))
 
 (define (first-agenda-item agenda)
   (if (empty-agenda? agenda)

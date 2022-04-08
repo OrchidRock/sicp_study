@@ -27,30 +27,30 @@
          (make-procedure (lambda-parameters exp)
                          (lambda-body exp)
                          env))
-        ((begin? exp) 
+        ((begin? exp)
          (eval-sequence (begin-actions exp) env))
         ((cond? exp) (eval (cond->if exp) env))
-        
+
         ;: exercise 4.4
         ((and? exp) (eval-and exp env))
         ((or? exp) (eval-or exp env))
-        
+
         ;; show how to implement 'and and 'or as derived expressions.
         ((and? exp) (eval (and->if exp) env))
         ((or? exp) (eval (or->if exp) env))
-        
+
         ;: exercise 4.6
         ((let? exp) (eval (let->combination exp) env))
-        
+
         ;; exercise 4.7
         ((let*? exp) (eval (let*->nested-lets exp) env))
-        
+
         ;: exercise 4.9
         ((while? exp) (eval (while->combination exp) env))
 
         ;: exercise 4.25
         ((unless? exp) (eval (unless->if exp) env))
-    
+
         ((application? exp)
          ;(display "lv: " (list-of-values (operands exp) env))
          ;(newline)
@@ -59,7 +59,7 @@
         (else
          (error "Unknown expression type -- EVAL" exp))))
 
-(define (apply procedure arguments)  
+(define (apply procedure arguments)
     (cond ((primitive-procedure? procedure)
                 (apply-primitive-procedure procedure arguments))
           ((compound-procedure? procedure)
@@ -71,7 +71,7 @@
                 (user-print-objects arguments)
                 ;(display arguments)
                 (newline)
-                
+
                 (eval-sequence
                     (procedure-body procedure)
                     (extend-environment
@@ -99,7 +99,7 @@
             (list-of-values (rest-operands exps) env))))
 
 ;: exercise 4.1
-;: a version of list-of-values that evaluates operands from left to right regardless of the 
+;: a version of list-of-values that evaluates operands from left to right regardless of the
 ;: order of evalution in the underlying Lisp.
 (define (list-of-values-left-to-right exps env)
     (define (iter e results)
@@ -108,8 +108,15 @@
             (let ((left-value (eval (first-operand e) env)))
                 (iter (rest-operands e) (append results (list left-value))))))
     (iter exps '()))
+(define (list-of-values-left-to-right2 exps env)
+    (if (no-operands? exps)
+        '()
+        (let ((left-value (eval (first-operand exps) env)))
+            (cons left-value (list-of-values-left-to-right2
+                                    (rest-operands exps)
+                                    env)))))
 
-;: a version of list-of-values that evaluates operands from right to left regardless of the 
+;: a version of list-of-values that evaluates operands from right to left regardless of the
 ;: order of evalution in the underlying Lisp.
 (define (list-of-values-right-to-left exps env)
     (if (no-operands? exps)
@@ -286,6 +293,10 @@
 (define (cond-form2-clause? clause)
     (eq? (car (cond-actions clause)) '=>))
 
+;; only one action which has only one parameter
+(define (cond-form2-action clause)
+    (cadr (cond-actions clause)))
+
 (define (cond-predicate clause) (car clause))
 (define (cond-actions clause) (cdr clause))
 
@@ -302,11 +313,12 @@
                 (sequence->exp (cond-actions first))
                 (error "ELSE clause isn't last -- COND->IF"
                        clauses))
-            
+
             ;: exercise 4.5
             (if (and (cond-form2-clause? first)
                      (cond-predicate first))
-                (list (caddr first) (cond-predicate first))   ;  
+                (list (cond-form2-action first) (cond-predicate first));
+                ;(eval (cond-form2-action first) (cond-predicate first))
                 (make-if (cond-predicate first)
                          (sequence->exp (cond-actions first))
                          (expand-clauses rest)))))))
@@ -394,12 +406,12 @@
 
 (define (let->combination exp)
     (if (named-let? exp)
-        (make-begin (list (make-definition (cadr exp) 
+        (make-begin (list (make-definition (cadr exp)
                                (let-vars (caddr exp))
                                (cdddr exp)))
                           (cons (cadr exp) (let-exps (caddr exp)))))
         (cons (make-lambda (let-vars (let-vars-and-exps  exp))
-                           (let-body exp)) 
+                           (let-body exp))
               (let-exps (let-vars-and-exps exp))))
 
 
@@ -417,15 +429,15 @@
 
 (define (while->combination exp)
     (make-if (while-predicate exp)
-             (make-begin (list (while-body exp) exp))
-             'ok))
+             (make-begin (append (while-body exp) (list exp)))
+             'true))
 
 (define (unless? exp) (tagged-list? exp 'unless))
 (define (unless-condition exp) (cadr exp))
 (define (unless-usual-value exp) (caddr exp))
 (define (unless-exceptional-value exp) (cadddr exp))
 (define (unless->if exp)
-    (make-if (unless-condition exp) 
+    (make-if (unless-condition exp)
              (unless-exceptional-value exp)
              (unless-usual-value exp)))
 
@@ -440,7 +452,7 @@
 
 ;: exercise 4.17
 ;: scan-out-defines constructes a extra frame.
-;: Design a way without constructing it: 
+;: Design a way without constructing it:
 ;: To translate all internal definitations to lambda expressions will create new problem
 ;: that which breaks the order of set!.
 
@@ -450,9 +462,9 @@
             (cons define-caluses (append set-caluses exp-calues))
             (let ((first-exp (car body)))
                 (if (definition? first-exp)
-                    (iter (cdr body) 
-                          (append define-caluses (list (list 'define 
-                                                             (definition-variable first-exp) 
+                    (iter (cdr body)
+                          (append define-caluses (list (list 'define
+                                                             (definition-variable first-exp)
                                                              '*unassigned*)))
                           (append set-caluses (list (make-assignment (definition-variable first-exp)
                                                  (definition-value first-exp))))
@@ -474,8 +486,8 @@
             (cons let-caluses (append set-caluses exp-calues))
             (let ((first-exp (car body)))
                 (if (definition? first-exp)
-                    (iter (cdr body) 
-                          (append let-caluses (list (list (definition-variable first-exp) 
+                    (iter (cdr body)
+                          (append let-caluses (list (list (definition-variable first-exp)
                                                           '*unassigned*)))
                           (append set-caluses (list (make-assignment (definition-variable first-exp)
                                                  (definition-value first-exp))))
@@ -492,7 +504,7 @@
 
 ;:
 ;: scan-out-defines can't match the analyzing_mceval.scm
-;: 
+;:
 (define (make-procedure parameters body env)
     (display "make-procedure scan-out-defines: ")
     (display body)
@@ -500,7 +512,9 @@
     (display "           after: ")
     ;(display (scan-out-defines-optim body))
     (newline)
+    ; exercise 4.16 c)
     ;(list 'procedure parameters (scan-out-defines-optim body) env))
+    ;(list 'procedure parameters (scan-out-defines body) env))
     (list 'procedure parameters body env))
 
 (define (compound-procedure? p)
@@ -547,7 +561,7 @@
       (cond ((null? vars)
              (env-loop (enclosing-environment env)))
             ((eq? var (car vars))
-             (if (eq? (car vals) '*unassigned*) ;: exercise 4.16
+             (if (eq? (car vals) '*unassigned*) ;: exercise 4.16 a)
                 (error "LOOKUP-VARIABLE-VALUE have found unassigned variable" var)
                 (car vals)))
             (else (scan (cdr vars) (cdr vals)))))
@@ -623,8 +637,9 @@
         (list '* *)
         (list '/ /)
         (list '= =)
+        (list '> >)
         (list 'square square)
-        ;(list 'map map)
+        (list 'quit quit)
         (list 'list list)
 ;;      more primitives
         ))
@@ -636,12 +651,12 @@
 ;: then we apply: (apply-in-underlying-scheme #[compiled-procedure 14 (list #6xf)]
 ;:                                            ('primitive #[compiled-procedure 15 (list #x1)])
 ;:                                            ((1 2) (3 4)))
-;: the system's map can't identify the ('primitive #[compiled-procedure 15 (list #x1)]) 
+;: the system's map can't identify the ('primitive #[compiled-procedure 15 (list #x1)])
 ;: because it's the defination of ourself.
 ;: so we have to define our own map procedure.
 
 (define (primitive-procedure-names) (map car primitive-procedures))
-(define (primitive-procedure-objects) (map (lambda (proc) (list 'primitive (cadr proc))) 
+(define (primitive-procedure-objects) (map (lambda (proc) (list 'primitive (cadr proc)))
                                            primitive-procedures))
 
 (define (apply-primitive-procedure proc args)

@@ -8,7 +8,7 @@
               ((= bit 0) (left-branch branch))
               (else (error "bad bit -- CHOOSE-BRANCH" bit))))
     (define (decode-1 bits current-branch)
-        (if (null? bits) 
+        (if (null? bits)
             '()
             (let ((next-branch (chooes-branch (car bits) current-branch)))
                 (if (leaf? next-branch)
@@ -41,5 +41,5 @@
                                                     (make-leaf 'C 1)))))
 (define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
 
-(define m1 '(d a c b d b c a))
+(define m1 '(D A C B D B C A))
 (define t1 (encode m1 sample-tree))

@@ -2,11 +2,11 @@
 ;:
 ;:
 (load "unique_pairs.scm")
-(define (unique-tripies n)
+(define (unique-triple n)
     (accumulate append
                 '()
-                (map (lambda (i) (map (lambda (x) (cons i x)) 
-                                      (unique-pairs (- i 1)))) 
+                (map (lambda (i) (map (lambda (x) (cons i x))
+                                      (unique-pairs (- i 1))))
                     (enumerate-interval 1 n))))
 ;: Test
 (define T1 (unique-tripies 3))

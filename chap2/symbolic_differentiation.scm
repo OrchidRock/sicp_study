@@ -1,10 +1,10 @@
 ;:
 ;:
-(load "prefix_algebraic_expr.scm")
-;(load "infix_algebraic_expr.scm")
+;(load "prefix_algebraic_expr.scm")
+(load "infix_algebraic_expr.scm")
 (define (deriv expr var)
-    (display expr)
-    (newline)
+    ;(display expr)
+    ;(newline)
     (cond ((number? expr) 0)
           ((variable? expr) (if (same-variable? expr var) 1 0))
           ((sum? expr) (make-sum (deriv (addend expr) var)

@@ -6,6 +6,8 @@ chap1/assignments/*
 chap2/ch2.scm
 chap2/ch2support.scm
 chap2/ch2tests.scm
+chap2/racket/compiled
+chap2/racket/compiled/*
 chap3/ch3.scm
 chap3/ch3support.scm
 chap4/ch4.scm
@@ -14,5 +16,12 @@ chap4/ch4-analyzingmceval.scm
 chap4/ch4-leval.scm
 chap4/ch4-mveval.scm
 chap4/ch4-query.scm
-
+chap1/*~
+chap2/*/*~
+chap3/*~
+chap4/*~
+chap1/*.swp
+chap2/*/*.swp
+chap3/*.swp
+chap4/*.swp
 

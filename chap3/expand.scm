@@ -1,8 +1,8 @@
 ;:
 ;: exercise 3.58
 ;: The expend procedure translates the rational to decimal fraction.
-;: 
-(load "streams.scm")
+;:
+(load "streams_interfaces.scm")
 
 (define (expend num den radix)
     (cons-stream (quotient (* num radix) den)

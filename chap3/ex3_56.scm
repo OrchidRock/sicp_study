@@ -2,10 +2,10 @@
 ;: exercise 3.56
 ;:
 
-(load "streams.scm")
+(load "streams_interfaces.scm")
 
 
-(define S (cons-stream 1 (merge-stream (scale-stream S 2) 
+(define S (cons-stream 1 (merge-stream (scale-stream S 2)
                                        (merge-stream (scale-stream S 3)
                                                      (scale-stream S 5)))))
 

@@ -1,7 +1,7 @@
 
 (declare (usual-integrations))
 
-;: 
+;:
 ;: How many different ways can we make changes of $ 1.00.
 ;: The number of ways to change amount a using n kinds of coins equals
 ;:      a. the number of ways to change amount a using all but the first kind of coin, plus

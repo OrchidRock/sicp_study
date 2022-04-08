@@ -12,10 +12,10 @@
 
 
 
-(define (scale-tree tree factor)
+(define (scale-tree-m tree factor)
     (map (lambda (sub-tree)
             (if (pair? sub-tree)
-                (scale-tree sub-tree factor)
+                (scale-tree-m sub-tree factor)
                 (* sub-tree factor)))
          tree))
 

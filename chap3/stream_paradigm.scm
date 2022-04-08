@@ -2,7 +2,7 @@
 ;:
 ;:
 
-(load "streams.scm")
+(load "streams_interfaces.scm")
 
 (define (average x y) (/ (+ x y) 2))
 (define (sqrt-improve guess x)
@@ -21,7 +21,7 @@
     (cons-stream (/ 1.0 n) (stream-map - (pi-summands (+ n 2)))))
 (define pi-stream (scale-stream (partial-sums (pi-summands 1)) 4))
 
-;: sequence accelerator 
+;: sequence accelerator
 (define (euler-transform s)
     (let ((s0 (stream-ref s 0))
           (s1 (stream-ref s 1))
@@ -45,14 +45,14 @@
 (define (ln2-summands n)
     (cons-stream (/ 1.0 n) (stream-map - (ln2-summands (+ n 1)))))
 (define ln2-stream (partial-sums (ln2-summands 1)))
-(define accelerated-ln2-stream (euler-transform ln2-stream))
-(define super-accelerated-ln2-stream (accelerated-sequence euler-transform ln2-stream))
+(define ln2-stream2 (euler-transform ln2-stream))
+(define ln2-stream3 (accelerated-sequence euler-transform ln2-stream))
 
 ;: Test
 
 (define sqrt2 (sqrt-stream 2))
-(define accelerated-pi-stream (euler-transform pi-stream))
-(define super-accelerated-pi-stream (accelerated-sequence euler-transform pi-stream))
+(define pi-stream3 (euler-transform pi-stream))
+(define pi-stream3 (accelerated-sequence euler-transform pi-stream))
 
 (define t1 (sqrt 2 0.01))
 

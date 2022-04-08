@@ -35,6 +35,32 @@
 (define (print-queue queue)
     (display (front-ptr queue))
     'ok)
+
+;: exercise 3.22
+(define (make-queue-2)
+    (let ((front-ptr '())
+          (rear-ptr '()))
+        (define (dispatch m)
+            (cond ((eq? m 'empty?) (null? front-ptr))
+                  ((eq? m 'front) (if (null? front-ptr)
+                                      (error "")
+                                      (car front-ptr)))
+                  ((eq? m 'insert!)
+                    (lambda (item) (let ((new-pair (cons item '())))
+                                        (cond ((null? front-ptr)
+                                                (set! front-ptr new-pair)
+                                                (set! rear-ptr new-pair)
+                                                'ok)
+                                              (else
+                                                (set-cdr! rear-ptr new-pair)
+                                                (set! rear-ptr new-pair)
+                                                'ok)))))
+                  ((eq? m 'delete!)
+                    (if (null? front-ptr)
+                        (error "")
+                        (set! front-ptr (cdr front-ptr))))
+                  (else (error ""))))
+        dispatch))
 ;:
 (define q1 (make-queue))
-
+(define q2 (make-queue-2))

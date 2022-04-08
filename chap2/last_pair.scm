@@ -1,6 +1,6 @@
 ;:
 ;: exercise 2.17
-;: Define a procedure that returns the list that contains only the last element of 
+;: Define a procedure that returns the list that contains only the last element of
 ;: a given (noempty) list.
 ;:
 

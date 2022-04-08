@@ -38,16 +38,20 @@
        (lambda (r a) (tag (make-from-mag-ang r a))))
   (put 'equ? '(complex complex) equ?)
   (put '=zero? '(complex) =zero?)
-  
+
   ;: exercise 2.88
-  (put 'negtive '(complex) 
-    (lambda (x) (tag (make-from-real-imag (negtive (real-part x)) 
+  (put 'negtive '(complex)
+    (lambda (x) (tag (make-from-real-imag (negtive (real-part x))
                                           (negtive (imag-part x))))))
 
 ;: exercise 2.83
   (put 'raise '(complex) (lambda (x) (tag x)))
   (put 'type-index 'complex COMPLEX_INDEX)
-    ;: exercise 2.77 
+
+;: exercise 2.85
+  (put 'project '(complex)
+    (lambda (x) ((get 'make 'scheme) (real-part x))))
+    ;: exercise 2.77
   (put 'real-part '(complex) real-part)
   (put 'imag-part '(complex) imag-part)
   (put 'magnitude '(complex) magnitude)

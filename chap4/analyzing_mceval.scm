@@ -2,6 +2,7 @@
 ;: Separating syntactic analysis from execution
 ;:
 
+(define apply-in-underlying-scheme apply)
 (load "metacircular_evaluator.scm")
 
 (define (eval exp env)
@@ -10,7 +11,7 @@
         ((analyze exp) env))
 
 (define (analyze exp)
-  (cond ((self-evaluating? exp) 
+  (cond ((self-evaluating? exp)
          (analyze-self-evaluating exp))
         ((quoted? exp) (analyze-quoted exp))
         ((variable? exp) (analyze-variable exp))
@@ -54,7 +55,7 @@
     (let ((var (assignment-variable exp))
           (vproc (analyze (assignment-value exp))))
         (print-analyze "=> After analyze-assignment: lambda (env) " var vproc)
-        (lambda (env) 
+        (lambda (env)
             (set-variable-value! var (vproc env) env)
             'ok)))
 
@@ -63,7 +64,7 @@
     (let ((var (definition-variable exp))
           (vproc (analyze (definition-value exp))))
         (print-analyze "=> After analyze-definition: lambda (env) " var vproc)
-        (lambda (env) 
+        (lambda (env)
             (define-variable! var (vproc env) env))))
 
 (define (analyze-if exp)
@@ -115,7 +116,7 @@
           (aprocs (map analyze (operands exp))))
         (print-analyze "=> After analyze-application: lambda (env) " fproc aprocs)
         (lambda (env)
-            (execute-application (fproc env) 
+            (execute-application (fproc env)
                                  (map (lambda (aproc) (aproc env))
                                     aprocs)))))
 

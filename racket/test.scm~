@@ -1,0 +1,8 @@
+#lang racket
+(require graphics/graphics)
+(open-graphics)
+
+(define vp (open-pixmap "test" 100 100))
+
+
+(close-graphics)

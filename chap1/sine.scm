@@ -6,13 +6,15 @@
 
 (declare (usual-integrations))
 
+(define ACCURACY 0.001)
+
 (define (sine angle)
     (define (cude x) (* x x x ))
     (define (p x) (- (* 3 x) (* 4 (cude x))))
-    (if (<= (abs angle) 0.1)
+    (if (<= (abs angle) ACCURACY)
         angle
         (p (sine (/ angle 3.0)))))
 
 ;: sin(12.15) = -0.4044438228491401
-;: sine(12.15) = -0.39980345741334 
-;: p will be called 
+;: sine(12.15) = -0.39980345741334
+;: p will be called

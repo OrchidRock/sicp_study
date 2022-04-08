@@ -4,43 +4,48 @@
 (load "data_directed_package.scm")
 (load "type_index_dispatch.scm")
 
-(define (install-scheme-number-package)
+(define (install-integer-package)
   (define (tag x)
-    (attach-tag 'scheme-number x))
-  (put 'add '(scheme-number scheme-number)
+    (attach-tag 'integer x))
+  (put 'add '(integer integer)
        (lambda (x y) (tag (+ x y))))
-  (put 'sub '(scheme-number scheme-number)
+  (put 'sub '(integer integer)
        (lambda (x y) (tag (- x y))))
-  (put 'mul '(scheme-number scheme-number)
+  (put 'mul '(integer integer)
        (lambda (x y) (tag (* x y))))
-  (put 'div '(scheme-number scheme-number)
-       (lambda (x y) (tag (/ x y))))
-  (put 'make 'scheme-number
+  (put 'div '(integer integer)
+       (lambda (x y)
+            (if (= (remainder x y) 0)
+                (tag (/ x y))
+                ((get 'make 'rational) x y))))
+  (put 'make 'integer
        (lambda (x) (tag x)))
 ;: exercise 2.88
-  (put 'negtive '(scheme-number)
+  (put 'negtive '(integer)
         (lambda (x) (tag (- x))))
-  
+
   ;: exercise 2.94
-  (put 'gcd '(scheme-number scheme-number)
+  (put 'gcd '(integer integer)
     (lambda (x y) (tag (gcd x y))))
-  
+
   ;: exercise 2.97
-  (put 'reduce '(scheme-number scheme-number)
+  (put 'reduce '(integer integer)
     (lambda (x y) (let ((g (gcd x y)))
                     (list (/ x g) (/ y g)))))
-;: exercise 2.79 
+;: exercise 2.79
 ;: exercise 2.80
-  (put 'equ? '(scheme-number scheme-number)
+  (put 'equ? '(integer integer)
         (lambda (x y) (= x y)))
-  (put '=zero? '(scheme-number)
+  (put '=zero? '(integer)
         (lambda (x) (= x 0)))
-  
+
 ;: exercise 2.83
-  (put 'raise '(scheme-number) 
+  (put 'raise '(integer)
     (lambda (x) ((get 'make 'rational) x 1)))
-  ;(put 'raise '(scheme-number) 
+
+  ;(put 'raise '(integer)
     ;(lambda (x) ((get 'make 'polynomial) 'i (list (list 0 x)))))
-  (put 'type-index 'scheme-number SCHEME_NUMBER_INDEX)
+
+  (put 'type-index 'integer INTEGER_INDEX)
 
   'done)

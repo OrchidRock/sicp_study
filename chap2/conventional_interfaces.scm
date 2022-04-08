@@ -1,10 +1,10 @@
 ;;
 ;: Sequences as Conventional Interfaces
-;: 
+;:
 
 ;; mapper
 (define (map-s proc items)
-    (if (null? items) 
+    (if (null? items)
         '()
         (cons (proc (car items))
               (map-s proc (cdr items)))))
@@ -27,9 +27,9 @@
         initial
         (op (car sequence) (accumulate op initial (cdr sequence)))))
 
-;: 
+;:
 ;: exercise 2.36
-;: accumulate-n  similar to accumulate except that it takas as its third argument 
+;: accumulate-n  similar to accumulate except that it takas as its third argument
 ;: a sequence of sequence, which are all assumed to hava the same number of elements.
 ;: It applies the designated accumulation procedure to combine all the first elements
 ;: of the sequence, all the second elements of the sequence, and so on, and returns a
@@ -37,7 +37,7 @@
 ;:
 
 (define (select-car s)
-    (if (null? s) 
+    (if (null? s)
         '()
         (cons (car (car s))
               (select-car (cdr s)))))
@@ -64,13 +64,23 @@
         '()
         (cons low (enumerate-interval (+ low 1) high))))
 
+
+;: flatmap
+(define (flatmap proc seq)
+    (accumulate append '() (map proc seq)))
+
+
+
+;: examples
+
+
 (load "fringe.scm")
 (define enumerate-tree fringe)
 
 (define (sum-odd-squares tree)
-    (accumulate + 
-                0 
-                (map-s square 
+    (accumulate +
+                0
+                (map-s square
                      (filter odd?
                              (enumerate-tree tree)))))
 

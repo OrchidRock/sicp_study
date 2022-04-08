@@ -1,24 +1,25 @@
 ;:
 ;:exercise 4.12
-;: 
+;:
 
 (define (lookup-operate-env-variable var val env f-not-founded f-founded)
     (define (env-loop env)
-        (define (scan f)
-            (cond ((null? f) ; not-founded
+        (define (scan vars vals)
+            (cond ((null? vars) ; not-founded
                 (f-not-founded (enclosing-environment env)
                                (lambda (var val) (add-binding-to-frame! var val frame))))
-            ((eq? var (caar f))
-                (f-founded (car f)))
-            (else (scan (cdr f)))))
+            ((eq? var (car vars))
+                (set-car! vals val)
+                (car vals))
+            (else (scan (cdr vars) (cdr vals)))))
         (if (eq? env the-empty-environment)
             (error "Unbound variable -- SET!" var)
             (let ((frame (first-frame env)))
-                (scan frame))))
+                (scan (frame-variables frame) (frame-values frame)))))
     (env-loop env))
 
 (define (set-variable-value! var val env)
-    (lookup-operate-env-variable var val env 
+    (lookup-operate-env-variable var val env
                                     (lambda (e f) (set-variable-value! var val e))
                                     (lambda (pair) (set-cdr! pair val))))
 

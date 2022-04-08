@@ -5,7 +5,8 @@
 (load "data_directed_package.scm")
 (load "rectangular_complex_package.scm")
 (load "polar_complex_package.scm")
-(load "scheme_number_package.scm")
+(load "real_package.scm")
+(load "integer_package.scm")
 (load "rational_package.scm")
 (load "complex_package.scm")
 (load "type_index_dispatch.scm")
@@ -18,6 +19,7 @@
     (display " ")
     (display args)
     (newline)
+
 
     (let ((type-tags (map type-tag args)))
         (let ((proc (get op type-tags)))
@@ -41,17 +43,17 @@
                                         (error "No method for these type -- APPLY-GENERIC" (list op type-tags)))
                                     ((= type1-index type2-index) (apply-generic op (raise a1) (raise a2)))
                                     ((= type2-index POLYNOMIAL_INDEX) (apply-generic op
-                                                                            (raise-to-poly a1 
+                                                                            (raise-to-poly a1
                                                                               (variable (contents a2)))
                                                                             a2))
                                     ((= type1-index POLYNOMIAL_INDEX) (apply-generic op
                                                                             a1
-                                                                            (raise-to-poly 
-                                                                              a2 
+                                                                            (raise-to-poly
+                                                                              a2
                                                                               (variable (contents a1)))))
                                     ((> type2-index type1-index) (apply-generic op (raise-n a1 (- type2-index type1-index)) a2))
                                     (else (apply-generic op a1 (raise-n a2 (- type1-index type2-index)))))))
-                      ((= (length args) 1) 
+                      ((= (length args) 1)
                         (let ((t (type-index (car type-tags)))
                               (a (car args)))
                             (if (or (= t COMPLEX_INDEX)
@@ -79,8 +81,12 @@
 ;: exercise 2.83
 (define (raise x) (apply-generic 'raise x))
 
+;: exercise 2.85
+(define (project x) (apply-generic 'project x))
+(define (drop x) (apply-generic 'drop x))
+
 (define (raise-n arg n)
-    (if (= n 0) 
+    (if (= n 0)
         arg
         (raise-n (raise arg) (- n 1))))
 
@@ -99,7 +105,8 @@
 (install-rectangular-package)
 (install-polar-package)
 (install-rational-package)
-(install-scheme-number-package)
+(install-real-package)
+(install-integer-package)
 (install-dense-terms-package)
 (install-sparse-terms-package)
 (install-polynomial-package)
@@ -110,8 +117,11 @@
 ;(define (make-from-mag-ang r a)
 ;    ((get 'make-from-mag-ang 'polar) r a))
 
-(define (make-from-scheme-number n)
-    ((get 'make 'scheme-number) n))
+(define (make-from-integer n)
+    ((get 'make 'integer) n))
+
+(define (make-from-real n)
+    ((get 'make 'real) n))
 
 (define (make-rational n d)
   ((get 'make 'rational) n d))
@@ -132,14 +142,14 @@
 (define (variable x)
     ((get 'variable 'polynomial) x))
 
-(define (type-index x) 
+(define (type-index x)
     (get 'type-index x))
 ;:
 ;: Test
 (define x1 (make-rational 0 1))
-(define x2 (make-from-scheme-number 0))
-(define x3 (make-from-scheme-number 5))
-(define y3 (make-from-scheme-number 6))
+(define x2 (make-from-real 0.5))
+(define x3 (make-from-integer 5))
+(define y3 (make-from-integer 6))
 (define x4 (make-rational 1 2))
 (define y4 (make-rational 2 3))
 (define x5 (make-complex-from-mag-ang 1.5 2.0))
@@ -151,15 +161,12 @@
 
 ;: 3x^2 + (2+3i)x + 7
 (define y10 (make-polynomial-from-sparse 'x (list (list 2 3)
-                                      (list 1 (make-polynomial-from-sparse 'i (list (list 1 3)
-                                                                        (list 0 2))))
+                                      (list 1 (make-complex-from-real-imag 2 3))
                                        (list 0 7))))
 ;: x^4 + (2/3)*x^2 + (5+3i)
 (define y11 (make-polynomial-from-sparse 'x (list (list 4 1)
                                       (list 2 (make-rational 2 3))
-                                      (list 0 (make-polynomial-from-sparse 'i (list (list 1 3)
-                                                                        (list 0 5))))
-                                                                        )))
+                                      (list 0 (make-complex-from-real-imag 5 3)))))
 (define y12 (make-polynomial-from-sparse 'x (list (list 2 (make-polynomial-from-sparse 'y (list (list 1 1)
                                                                         (list 0 1))))
                                       (list 1 (make-polynomial-from-sparse 'y (list (list 2 1)
@@ -185,9 +192,9 @@
                                       (list 0 0))))
 
 (define y17 (make-polynomial-from-dense 'x (list 7
-                                                (make-polynomial-from-dense 'i (list 2 3))
+                                                (make-complex-from-real-imag 2 3)
                                                 3)))
-(define y18 (make-polynomial-from-dense 'x (list (make-polynomial-from-dense 'i (list 5 3))
+(define y18 (make-polynomial-from-dense 'x (list (make-complex-from-real-imag 5 3)
                                                  0
                                                  (make-rational 2 3)
                                                  0

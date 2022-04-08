@@ -28,7 +28,7 @@
                                    ((and (number? m1) (number? m2)) (* m1 m2))
                                    (else (list '* m1 m2))))
 ;: exercise 2.57
-;: Extend the differentiation program to handle sums and products of arbitrary numbers of 
+;: Extend the differentiation program to handle sums and products of arbitrary numbers of
 ;: (two or more) terms.
 (define (augend e) (if (null? (cdddr e))
                         (caddr e)

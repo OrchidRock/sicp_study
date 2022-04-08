@@ -2,6 +2,7 @@
 ;: LAZY EVALUTOR
 ;:
 
+(define apply-in-underlying-scheme apply)
 (load "metacircular_evaluator.scm")
 
 (define (eval exp env)
@@ -19,37 +20,37 @@
          (make-procedure (lambda-parameters exp)
                          (lambda-body exp)
                          env))
-        ((begin? exp) 
+        ((begin? exp)
          (eval-sequence (begin-actions exp) env))
         ((cond? exp) (eval (cond->if exp) env))
-        
+
         ;: exercise 4.4
         ((and? exp) (eval-and exp env))
         ((or? exp) (eval-or exp env))
-        
+
         ;; show how to implement 'and and 'or as derived expressions.
         ((and? exp) (eval (and->if exp) env))
         ((or? exp) (eval (or-if exp) env))
-        
+
         ;: exercise 4.6
         ((let? exp) (eval (let->combination exp) env))
-        
+
         ;; exercise 4.7
         ((let*? exp) (eval (let*->nested-lets exp) env))
-        
+
         ;: exercise 4.9
         ((while? exp) (eval (while->combination exp) env))
-        
+
         ((application? exp)
          (apply (actual-value (operator exp) env)
-                (operands exp) 
+                (operands exp)
                 env))
         (else
          (error "Unknown expression type -- EVAL" exp))))
 
-(define (apply procedure arguments env)  
+(define (apply procedure arguments env)
     (cond ((primitive-procedure? procedure)
-                (apply-primitive-procedure procedure 
+                (apply-primitive-procedure procedure
                                            (list-of-arg-values arguments env)))
           ((compound-procedure? procedure)
                 (display "apply-compound-procedure :")
@@ -60,7 +61,7 @@
                 (user-print-objects arguments)
                 ;(display arguments)
                 (newline)
-                
+
                 (eval-sequence
                     (procedure-body procedure)
                     (extend-environment
@@ -73,7 +74,7 @@
 (define (quoted->lazy-list exp env)
     (define (get-lazy-list t)
         (if (null? t)
-            '()
+            (list 'quote '())
             (list 'cons (list 'quote (car t)) (get-lazy-list (cdr t)))))
     (let ((text (text-of-quotation exp)))
         (if (pair? text)
@@ -113,7 +114,7 @@
 
 (define (force-it obj)
     (if (thunk? obj)
-        (begin 
+        (begin
             (display "force thunk: ")
             (print-exp (thunk-exp obj))
             (newline)
@@ -130,19 +131,19 @@
             (print-exp (thunk-exp obj))
             (newline)
             (let ((result (actual-value (thunk-exp obj) (thunk-env obj))))
-                
+
                 (display "forced thunk: ")
                 (print-exp (thunk-exp obj))
                 (display " => ")
                 (print-exp result)
                 (newline)
-                
+
                 (set-car! obj 'evaluated-thunk)
                 (set-car! (cdr obj) result)
                 (set-cdr! (cdr obj) '())
                 result))
           ((evaluated-thunk? obj)
-            
+
             (display "forced evaluated-thunk: ")
             (print-exp (thunk-exp obj))
             (display " => ")
@@ -151,9 +152,9 @@
 
             (thunk-value obj))
           (else obj)))
-        
 
-(define (delay-it exp env) 
+
+(define (delay-it exp env)
     (display "delay: ")
     (print-exp exp)
     (newline)
@@ -198,6 +199,10 @@
         (list 'newline newline)
         (list 'display display)
         (list 'list list)
+        (list 'car car)
+        (list 'cdr cdr)
+        (list 'cons cons)
+
 ;;      more primitives
         ))
 
@@ -212,7 +217,7 @@
 
 
 (define the-global-environment (setup-environment))
-(actual-value '(define (cons x y) (lambda (m) (m x y))) the-global-environment)
-(actual-value '(define (car z) (z (lambda (p q) p))) the-global-environment)
-(actual-value '(define (cdr z) (z (lambda (p q) q))) the-global-environment)
+;(actual-value '(define (cons x y) (lambda (m) (m x y))) the-global-environment)
+;(actual-value '(define (car z) (z (lambda (p q) p))) the-global-environment)
+;(actual-value '(define (cdr z) (z (lambda (p q) q))) the-global-environment)
 (driver-loop)

@@ -40,18 +40,18 @@
 ;:    Answer: the number of cons be called is n by tree->list-2, but it will be more and
 ;:            more in tree->list-1 by which append be called.
 ;: Test
-(define x1 (make-tree 7 
+(define x1 (make-tree 7
                       (make-tree 3
                                  (make-tree 1 '() '())
                                  (make-tree 5 '() '()))
                       (make-tree 9
                                  '()
                                  (make-tree 11 '() '()))))
-(define x2 (make-tree 3 
+(define x2 (make-tree 3
                       (make-tree 1 '() '())
                       (make-tree 7
                                  (make-tree 5 '() '())
-                                 (make-tree 9 
+                                 (make-tree 9
                                            '()
                                            (make-tree 11 '() '())))))
 ;(define t1 (tree->list-1 x1))

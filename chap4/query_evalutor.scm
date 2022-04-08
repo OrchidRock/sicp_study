@@ -1,6 +1,6 @@
 ;:
 
-(load "../chap3/streams.scm")
+(load "../chap3/streams_interfaces.scm")
 (load "../chap2/data_directed_package.scm")
 
 (define input-prompt ";;; Query input:")
@@ -9,7 +9,7 @@
 (define (query-driver-loop)
     (prompt-for-input input-prompt)
     (let ((q (query-syntax-process (read))))
-        (cond ((assertion-to-be-added? q) 
+        (cond ((assertion-to-be-added? q)
                     (add-rule-or-assertion! (add-assertion-body q))
                     (newline)
                     (display "Assertion added to data base.")
@@ -26,10 +26,10 @@
                     (query-driver-loop)))))
 
 (define (instantiate exp frame unbound-var-handler)
-    (define (copy exp)  
+    (define (copy exp)
         (cond ((var? exp)
                     (let ((binding (binding-in-frame exp frame)))
-                        (if binding 
+                        (if binding
                             (copy (binding-value binding))
                             (unbound-var-handler exp frame))))
               ((pair? exp)
@@ -41,7 +41,7 @@
     (define (print objs)
         (if (null? objs)
            'ok
-           (begin 
+           (begin
                (display (car objs))
                (display "  ")
                (print (cdr objs)))))
@@ -56,6 +56,8 @@
     (display "---")
     (newline)
     )
+(define (print-procedure-message msg . objects)())
+(define (print-frame frame) ())
 
 (define (qeval query frame-stream)
     (print-procedure-message "qeval: " query)
@@ -66,7 +68,7 @@
 
 (define (simple-query query-pattern frame-stream)
     (print-procedure-message "simple-query: " query-pattern )
-    (print-frame frame-stream) 
+    (print-frame frame-stream)
     (stream-flatmap
         (lambda (frame)
             (stream-append-delayed
@@ -98,14 +100,14 @@
 
 (define (match-conjoin-streams frame-stream1 frame-stream2)
     (print-procedure-message "match-conjoin-streams: " frame-stream1 frame-stream2)
-    (stream-flatmap 
+    (stream-flatmap
         (lambda (frame1)
             (stream-flatmap (lambda (frame2)
                                 (let ((new-frame (match-conjoin-frame frame1 frame2)))
                                     (if (eq? new-frame 'failed)
                                         the-empty-stream
                                         (singleton-stream new-frame))))
-                            frame-stream2)) 
+                            frame-stream2))
         frame-stream1))
 
 (define (match-conjoin-frame f1 f2)
@@ -118,7 +120,7 @@
                 (let ((f2-binding (binding-in-frame (binding-variable binding) f2)))
                     (if f2-binding
                         (if (equal? (binding-value f2-binding) (binding-value binding))
-                            (iter (cdr f) new-frame) ; matched 
+                            (iter (cdr f) new-frame) ; matched
                             'failed) ; match failed
                         (iter (cdr f) (extend (binding-variable binding)
                                               (binding-value binding)
@@ -146,8 +148,8 @@
     (print-procedure-message "lisp-value-query: " call)
     (stream-flatmap
         (lambda (frame)
-            (if (execute (instantiate call 
-                                      frame 
+            (if (execute (instantiate call
+                                      frame
                                       (lambda (v f)
                                             (error "Unknown pat var -- LISP-VALUE" v))))
                 (singleton-stream frame)
@@ -155,7 +157,7 @@
         frame-stream))
 
 (define (execute exp)
-    (print-procedure-message "execute: " exp) 
+    (print-procedure-message "execute: " exp)
     (apply (eval (predicate exp) user-initial-environment)
            (args exp)))
 
@@ -164,8 +166,8 @@
 ;: exercise 4.75
 (define (uniquely-asserted operands frame-stream)
     (print-procedure-message "uniquely-asserted: " operands)
-    (stream-flatmap 
-        (lambda (frame) 
+    (stream-flatmap
+        (lambda (frame)
             (let ((eval_result (qeval (car operands) (singleton-stream frame))))
                 (print-procedure-message "=> Qeval unique contents finished: " eval_result)
                 ;(display (stream-cdr eval_result))
@@ -312,7 +314,7 @@
                    (get-stream '? 'rule-stream)))
 
 (define (add-rule-or-assertion! assertion)
-    (if (rule? assertion) 
+    (if (rule? assertion)
         (add-rule! assertion)
         (add-assertion! assertion)))
 
@@ -371,14 +373,14 @@
 (define (flatten-stream stream)
     (if (stream-null? stream)
         the-empty-stream
-        (interleave-delayed (stream-car stream) 
+        (interleave-delayed (stream-car stream)
                             (delay (flatten-stream (stream-cdr stream))))))
 (define (singleton-stream x)
     (cons-stream x the-empty-stream))
 
 ;: syntax procedures
 (define (type exp)
-    (if (pair? exp) 
+    (if (pair? exp)
         (car exp)
         (error "Unknown expression TYPE" exp)))
 (define (contents exp)
@@ -441,7 +443,7 @@
     (cons '? (cons rule-application-id (cdr var))))
 
 (define (contract-question-mark variable)
-    (string->symbol (string-append "?" 
+    (string->symbol (string-append "?"
                         (if (number? (cadr variable))
                             (string-append (symbol->string (caddr variable))
                                            "-"
@@ -498,10 +500,10 @@
   (put 'not 'qeval negate)
   (put 'lisp-value 'qeval lisp-value)
   (put 'always-true 'qeval always-true)
-  
+
   ;: exercise 4.75
   (put 'unique 'qeval uniquely-asserted)
-  
+
   (deal-out rules-and-assertions '() '()))
 
 (define microshaft-data-base
@@ -583,5 +585,5 @@
          (supervisor ?x ?y)
          (not (job ?y (?p . ?type)))))
 ))
-;(initialize-data-base microshaft-data-base)
-;(query-driver-loop)
+(initialize-data-base microshaft-data-base)
+(query-driver-loop)

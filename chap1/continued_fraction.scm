@@ -1,5 +1,5 @@
-;: An infinite continued fraction
-;: 
+; An infinite continued fraction
+;:
 
 ;: exercise 1.37
 ;: recursive version
@@ -27,9 +27,9 @@
 ;: exercise 1.38
 ;: ouler's e which is the base of the natural logarithms.
 ;:
-(define (ouler-e) 
-    (cont-frac-iter (lambda (i) 1.0) 
-                    (lambda (i) 
+(define (ouler-e)
+    (cont-frac-iter (lambda (i) 1.0)
+                    (lambda (i)
                         (if (= (remainder (+ i 1) 3) 0)
                             (* 2 (/ (+ i 1) 3))
                             1))
